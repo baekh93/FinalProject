@@ -1,5 +1,5 @@
 # keonhoBae
-keonho's github
+KH 정보교육원 파이널 프로젝트
 
 [1.[야보자] 개발예정보고서.pdf](https://github.com/baekh93/FinalProject/files/2918344/1.pdf)
 
