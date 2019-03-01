@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="reviewboard">
+  
+   <select id="selectAll" parameterType="com.yaboja.dto.ReviewboardDto" resultType="com.yaboja.dto.ReviewboardDto">
+   SELECT * FROM REVIEWBOARD ORDER BY REVIEWBOARDSEQ DESC
+   </select>
+  
+   <select id="selectOne" resultType="com.yaboja.dto.ReviewboardDto">
+   SELECT * FROM REVIEWBOARD WHERE REVIEWBOARDSEQ = #{reviewboardseq}
+   </select>
+   <select id="titlemovie" resultType="MovieDto" parameterType="int">
+   SELECT * FROM MOVIE WHERE MOVIESEQ = #{movieseq}
+   </select>
+   <insert id="Insert">
+   INSERT INTO REVIEWBOARD VALUES(REVIEWBOARD_SEQ.NEXTVAL,#{userseq},#{movietitle},#{reviewboardtitle},#{reviewboardcontent}, SYSDATE,#{reviewboardview}) 
+   </insert>
+  
+   <update id="update" parameterType="ReviewboardDto">
+   UPDATE REVIEWBOARD SET 
+   REVIEWBOARDTITLE = #{reviewboardtitle}, REVIEWBOARDCONTENT = #{reviewboardcontent} 
+   WHERE REVIEWBOARDSEQ = #{reviewboardseq}
+   </update>
+  
+   <update id="viewupdate" parameterType="ReviewboardDto">
+   UPDATE REVIEWBOARD SET 
+   REVIEWBOARDVIEW = REVIEWBOARDVIEW + 1
+   WHERE REVIEWBOARDSEQ = #{reviewboardseq}
+   </update>
+   
+   <delete id="delete" parameterType="ReviewboardDto">
+   DELETE FROM REVIEWBOARD WHERE REVIEWBOARDSEQ = #{reviewboardseq}
+   </delete>
+   
+   <select id="movieAll" resultType="com.yaboja.dto.MovieDto">
+		SELECT * FROM MOVIE ORDER BY
+		MOVIESEQ DESC
+	</select>
+	
+	<select id="movietitle" parameterType="String" resultType="com.yaboja.dto.MovieDto">
+		SELECT * FROM MOVIE WHERE MOVIETITLE = #{movietitle}
+	</select>
+	<select id="getMovie" parameterType="map" resultType="com.yaboja.dto.MovieDto">
+		SELECT * FROM MOVIE WHERE MOVIESEQ = TO_NUMBER(#{movietitle})
+	</select>
+   
+   <select id="listPage" resultType="ReviewboardDto" parameterType="Criteria">
+
+		SELECT *
+		FROM(
+		SELECT
+		REVIEWBOARDSEQ, USERSEQ, MOVIETITLE,
+		REVIEWBOARDTITLE, REVIEWBOARDCONTENT, REVIEWBOARDDATE,
+		REVIEWBOARDVIEW, row_NUMBER() OVER(ORDER BY REVIEWBOARDSEQ DESC) AS
+		rNUM FROM REVIEWBOARD) TS
+		WHERE rNUM BETWEEN #{rowStart} AND #{rowEnd}
+		ORDER BY REVIEWBOARDSEQ DESC
+
+	</select>
+	<select id="listCount" resultType="int"><!-- 총개시물에 대한 개수 -->
+	<![CDATA[
+	SELECT COUNT(REVIEWBOARDSEQ)
+	FROM REVIEWBOARD
+	WHERE REVIEWBOARDSEQ > 0
+	]]>
+	</select>
+	<select id="listCount1" resultType="int"><!-- 검색할때 필요 -->
+	<![CDATA[
+	SELECT COUNT(MOVIESEQ)
+	FROM MOVIE
+	WHERE MOVIESEQ > 0
+	]]>
+	</select>
+
+	<select id="listSearch" resultType="MovieDto"
+		parameterType="SearchCriteria">
+		select *
+		from (
+		select MOVIESEQ, MOVIETITLE, RATING, GENRE, TIME,
+		PUPDATE,
+		MOVIESTATE, DIRECTOR, ACTOR, IMGURL, CODE,
+		row_number()
+		over(order by MOVIESEQ asc) as rNum
+		from MOVIE
+		<include refid="search"></include>
+		) mb
+		where rNum between #{rowStart} and #{rowEnd}
+		order by MOVIESEQ asc
+	</select>
+
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">where movietitle like '%' || #{keyword} || '%'</if>
+		</if>
+	</sql>
+	<select id="countSearch" resultType="int">
+		select count(movieseq) from movie
+		<include refid="search"></include>
+	<![CDATA[ 
+	and movieseq > 0 
+	]]>
+	</select>
+</mapper>

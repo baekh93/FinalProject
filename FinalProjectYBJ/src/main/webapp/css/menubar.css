@@ -1,0 +1,71 @@
+
+
+
+
+.nav2 {
+
+	position: relative;
+	display: flex;
+	margin: 2em auto;
+		
+}
+
+.nav2 a {
+	display: block;
+	width: 20%;
+	height :10%;
+	padding: .75em 0;
+	color: #333;
+	text-decoration: none;
+	text-align: center;
+}
+
+.nav-underline {
+	position: absolute;
+	left: 0;
+	bottom: -40px;
+	width: 20%;
+	height: 2px;
+	background: #333;
+	transition: all .3s ease-in-out;
+}
+
+.nav2 a:nth-child(1).is-current ~ .nav-underline {
+	left: 0;
+}
+
+.nav2 a:nth-child(2).is-current ~ .nav-underline {
+	left: 20%;
+}
+
+.nav2 a:nth-child(3).is-current ~ .nav-underline {
+	left: 40%;
+}
+
+.nav2 a:nth-child(4).is-current ~ .nav-underline {
+	left: 60%;
+}
+
+.nav2 a:nth-child(5).is-current ~ .nav-underline {
+	left: 80%;
+}
+
+.nav2 a:nth-child(1):hover ~ .nav-underline {
+	left: 0;
+}
+
+.nav2 a:nth-child(2):hover ~ .nav-underline {
+	left: 20%;
+}
+
+.nav2 a:nth-child(3):hover ~ .nav-underline {
+	left: 40%;
+}
+
+.nav2 a:nth-child(4):hover ~ .nav-underline {
+	left: 60%;
+}
+
+.nav2 a:nth-child(5):hover ~ .nav-underline {
+	left: 80%;
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="chatting">
+  
+  	<insert id="submit" parameterType="ChattingDto">
+		INSERT INTO CHATTING VALUES(CHATTINGSQ.NEXTVAL, #{userseq1}, #{userseq2}, #{chatcontent}, SYSDATE,0)
+	</insert>
+	<select id="getChatListByID" parameterType="ChattingDto" resultType="ChattingDto">
+		SELECT * FROM CHATTING WHERE ((USERSEQ1 = #{userseq1} AND USERSEQ2 = #{userseq2}) OR (USERSEQ1 = #{userseq2} AND USERSEQ2 = #{userseq1})) AND CHATSEQ > #{chatseq} ORDER BY CHATTIME
+	</select>
+	
+	<select id="getChatListByRecent" parameterType="map" resultType="ChattingDto">
+		SELECT * FROM CHATTING WHERE ((USERSEQ1 = TO_NUMBER(#{userseq1}) AND USERSEQ2 = TO_NUMBER(#{userseq2})) OR (USERSEQ1 = TO_NUMBER(#{userseq2}) AND USERSEQ2 = TO_NUMBER(#{userseq1}))) AND CHATSEQ > (SELECT MAX(CHATSEQ) - TO_NUMBER(#{number}) FROM CHATTING WHERE (USERSEQ1 = TO_NUMBER(#{userseq1}) AND USERSEQ2 = TO_NUMBER(#{userseq2})) OR (USERSEQ1 = TO_NUMBER(#{userseq2}) AND USERSEQ2 = TO_NUMBER(#{userseq2}))) ORDER BY CHATTIME
+	</select>
+	<update id="readChat" parameterType="ChattingDto">
+		 UPDATE CHATTING SET CHATREAD = 1 WHERE (USERSEQ1 = #{userseq2} AND USERSEQ2 = #{userseq1})
+	</update>
+	<select id="getAllUnreadChat" parameterType="int" resultType="int">
+      SELECT COUNT(*) FROM CHATTING WHERE USERSEQ2 = #{userseq} AND CHATREAD = 0
+   	</select>
+   	<delete id="delete" parameterType="int">
+   		DELETE FROM CHATTING WHERE USERSEQ1 = #{userseq} OR USERSEQ2 = #{userseq}
+   	</delete>
+</mapper>

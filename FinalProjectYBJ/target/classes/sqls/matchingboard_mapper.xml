@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="matchingboard">
+
+	<!-- <select id="selectList" resultType="MatchingboardDto"> -->
+	<!-- SELECT USERNAME, MATCHINGBOARDTITLE, USERSEX, USERAGE, CINEMA, MOVIETITLE, 
+		MATCHINGBOARDDATE -->
+	<!-- FROM USERS A, CINEMA B, MOVIE C, MATCHINGBOARD D -->
+	<!-- WHERE A.USERSEQ = D.USERSEQ -->
+	<!-- AND B.CINEMASEQ = D.CINEMASEQ -->
+	<!-- AND C.MOVIESEQ = D.MOVIESEQ -->
+	<!-- </select> -->
+
+	<select id="selectList" resultType="MatchingboardDto">
+		SELECT *
+		FROM MATCHINGBOARD
+	</select>
+
+	<select id="selectOne" resultType="MatchingboardDto">
+		SELECT *
+		FROM MATCHINGBOARD
+		WHERE MATCHINGBOARD=#{matchingboard}
+		<!-- 시간되면 matchingboardseq로 바꾸기 -->
+	</select>
+	<select id="userOne" parameterType="int"
+		resultType="MatchingboardDto">
+		SELECT *
+		FROM MATCHINGBOARD
+		WHERE USERSEQ = #{userseq}
+	</select>
+
+	<insert id="insert" parameterType="map">
+		INSERT INTO MATCHINGBOARD
+		VALUES(MATCHINGBOARDSQ.NEXTVAL,TO_NUMBER(#{movieseq}),TO_NUMBER(#{userseq}),#{matchingboardtitle},#{matchingboardcontent},SYSDATE,TO_NUMBER(#{cinemaseq}))
+	</insert>
+
+	<update id="update" parameterType="map">
+		UPDATE MATCHINGBOARD SET MOVIESEQ =
+		TO_NUMBER(#{movieseq}),MATCHINGBOARDTITLE = #{matchingboardtitle},
+		MATCHINGBOARDCONTENT = #{matchingboardcontent}, CINEMASEQ =
+		TO_NUMBER(#{cinemaseq}) WHERE MATCHINGBOARD =
+		TO_NUMBER(#{matchingboard})
+	</update>
+
+	<select id="cinemaSeq" parameterType="map"
+		resultType="MatchingboardDto">
+		SELECT *
+		FROM MATCHINGBOARD
+		WHERE USERSEQ = TO_NUMBER(#{matchingwriter}) OR USERSEQ =
+		TO_NUMBER(#{matchingapplicant})
+	</select>
+
+	<delete id="delete" parameterType="int">
+		DELETE FROM MATCHINGBOARD WHERE USERSEQ = #{userseq}
+	</delete>
+	
+	<delete id="deleteMatchingboard" parameterType="int">
+		DELETE FROM MATCHINGBOARD WHERE MATCHINGBOARD = #{matchingboard}
+	</delete>
+
+
+	<!-- <select id="selectList" resultType="MatchingboardDto"> -->
+	<!-- SELECT USERNAME, MATCHINGBOARDTITLE, USERSEX, USERAGE, CINEMA, MOVIETITLE, 
+		MATCHINGBOARDDATE -->
+	<!-- FROM USERS A, CINEMA B, MOVIE C, MATCHINGBOARD D -->
+	<!-- WHERE A.USERSEQ = D.USERSEQ -->
+	<!-- AND B.CINEMASEQ = D.CINEMASEQ -->
+	<!-- AND C.MOVIESEQ = D.MOVIESEQ -->
+	<!-- </select> -->
+
+
+
+
+	<select id="listPage" resultType="MatchingboardDto"
+		parameterType="Criteria">
+
+		SELECT *
+		FROM(
+		SELECT
+		MATCHINGBOARD, MOVIESEQ, USERSEQ,
+		MATCHINGBOARDTITLE, MATCHINGBOARDDATE,
+		CINEMASEQ, row_NUMBER()
+		OVER(ORDER BY MATCHINGBOARD
+		DESC) AS rNUM FROM MATCHINGBOARD) TS
+		WHERE
+		rNUM BETWEEN #{rowStart} AND #{rowEnd} ORDER BY MATCHINGBOARD DESC
+
+	</select>
+	<select id="listCount" resultType="int">
+	<![CDATA[
+	SELECT COUNT(MATCHINGBOARD)
+	FROM MATCHINGBOARD
+	WHERE MATCHINGBOARD > 0
+	]]>
+	</select>
+
+	<select id="selectListByCinema" parameterType="int" resultType="MatchingboardDto">
+		SELECT *
+		FROM MATCHINGBOARD
+		WHERE CINEMASEQ = #{cinemaseq}
+	</select>
+	
+	<select id="selectListByMovieseq" parameterType="int" resultType="MatchingboardDto">
+		SELECT *
+		FROM MATCHINGBOARD
+		WHERE MOVIESEQ = #{movieseq}
+	</select>
+
+</mapper>

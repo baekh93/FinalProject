@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="moviecoment">
+
+<select id="commentCount" resultType="int">
+        SELECT
+            NVL(COUNT(*),0) as mycount
+        FROM MOVIECOMENT
+    </select>
+    
+    <select id="commentList" parameterType="int" resultType="moviecomentDto">
+        SELECT
+            *
+        FROM MOVIECOMENT WHERE MOVIESEQ = #{movieseq} ORDER BY MOVIECOMENTSEQ
+    </select>
+    
+    
+    <insert id="commentInsert" parameterType="moviecomentDto">
+        INSERT INTO
+        MOVIECOMENT (MOVIECOMENTSEQ, MOVIESEQ, MOVIECOMENTCONTENT, USERNAME, MOVIECOMENTDATE, USERSEQ)
+        VALUES(MOVIECOMENT_SEQ.NEXTVAL,#{movieseq},#{moviecomentcontent},#{username},SYSDATE,#{userseq}) 
+    </insert>
+    
+    <update id="commentUpdate" parameterType="moviecomentDto">
+        UPDATE MOVIECOMENT
+            SET
+            MOVIECOMENTCONTENT = #{moviecomentcontent}
+        WHERE MOVIECOMENTSEQ = #{moviecomentseq}
+    </update>
+    
+    <delete id="commentDelete" parameterType="int">
+        DELETE FROM MOVIECOMENT WHERE MOVIECOMENTSEQ = #{moviecomentseq}
+    </delete>
+
+
+  
+</mapper>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="matching">
+
+	<insert id="insert" parameterType="MatchingDto">
+		INSERT INTO MATCHING 
+		VALUES(MATCHINGSEQ.NEXTVAL,#{matchingwriter},#{matchingapplicant},
+		'P',0,0,SYSDATE,'N',#{cinemaseq},#{movieseq})
+	</insert>
+	
+	<select id="selectOne" parameterType="int" resultType="MatchingDto">
+		SELECT *
+		FROM MATCHING
+		WHERE MATCHINGAPPLICANT = #{userseq}
+	</select>
+	
+	
+	
+	<select id="userOne" parameterType="int" resultType="MatchingDto">
+		SELECT *
+		FROM MATCHING
+		WHERE MATCHINGAPPLICANT = #{userseq} AND MATCHINGSTATE = 'P'
+	</select>
+	
+	<delete id="delete" parameterType = "int">
+		DELETE FROM MATCHING WHERE MATCHINGSEQ=#{matchingseq}
+	</delete>
+	<update id="matchingcut" parameterType = "MatchingDto">
+		UPDATE MATCHING
+		SET MATCHINGSTATE ='E', MATCHINGDATE = SYSDATE
+		WHERE  MATCHINGSEQ =#{matchingseq} 
+	</update>
+	
+	<select id="getMatchingApplicant" parameterType="int" resultType="MatchingDto">
+		SELECT *
+		FROM MATCHING
+		WHERE MATCHINGWRITER = #{userseq} AND MATCHINGSTATE = 'P'
+	</select>
+	
+	<update id="acceptance" parameterType="map">
+		UPDATE MATCHING 
+		SET MATCHINGSTATE = 'S', SELECTEDAPPLICANT = 'Y' 
+		WHERE MATCHINGSEQ = (SELECT MAX(MATCHINGSEQ)
+						FROM MATCHING
+						WHERE MATCHINGWRITER = TO_NUMBER(#{matchingwriter}) AND MATCHINGAPPLICANT = TO_NUMBER(#{matchingapplicant}))
+	</update>
+	<update id="rejection" parameterType="map">
+		UPDATE MATCHING SET MATCHINGSTATE = 'E' WHERE MATCHINGWRITER = TO_NUMBER(#{matchingwriter}) AND MATCHINGAPPLICANT != TO_NUMBER(#{matchingapplicant})
+	</update>
+	<update id="rejectionOne" parameterType="map">
+		UPDATE MATCHING 
+		SET MATCHINGSTATE = 'E', MATCHINGDATE = SYSDATE
+		WHERE MATCHINGSEQ = (SELECT MAX(MATCHINGSEQ)
+						FROM MATCHING
+						WHERE MATCHINGWRITER = TO_NUMBER(#{matchingwriter}) AND MATCHINGAPPLICANT = TO_NUMBER(#{matchingapplicant}))
+	</update>
+	<select id="matchSuccess" parameterType="int" resultType="MatchingDto">
+		SELECT *
+		FROM MATCHING
+		WHERE (MATCHINGWRITER = #{userseq} OR MATCHINGAPPLICANT = #{userseq}) AND MATCHINGSTATE = 'S'
+	</select>
+	<select id="insertCheck" parameterType="int" resultType="MatchingDto">
+		SELECT *
+		FROM MATCHING
+		WHERE MATCHINGSEQ = (SELECT NVL(MAX(MATCHINGSEQ),0) FROM MATCHING WHERE MATCHINGAPPLICANT = #{userseq} OR MATCHINGWRITER = #{userseq})
+	</select>
+	
+	<select id="getAllUnreadMatching" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM MATCHING
+		WHERE (MATCHINGWRITER = #{userseq} AND MATCHINGSTATE = 'P' AND WRITERNOTICE = 0) OR (MATCHINGAPPLICANT = #{userseq} AND MATCHINGSTATE = 'S' AND APPLICANTNOTICE = 0 AND SELECTEDAPPLICANT = 'Y') OR (MATCHINGAPPLICANT = #{userseq} AND MATCHINGSTATE = 'E' AND APPLICANTNOTICE = 0 AND SELECTEDAPPLICANT = 'N')
+	</select>
+	
+	<update id="readMatchSuccess" parameterType="int">
+		UPDATE MATCHING SET APPLICANTNOTICE = 1 WHERE MATCHINGAPPLICANT = #{userseq} AND MATCHINGSTATE = 'S' AND SELECTEDAPPLICANT = 'Y'
+	</update>
+	<update id="readMatchRequested" parameterType="int">
+		UPDATE MATCHING SET WRITERNOTICE = 1 WHERE MATCHINGWRITER = #{userseq} AND MATCHINGSTATE = 'P'
+	</update>
+	<update id="readMatchRejection" parameterType="int">
+		UPDATE MATCHING SET APPLICANTNOTICE = 1 WHERE MATCHINGAPPLICANT = #{userseq} AND MATCHINGSTATE = 'E' AND SELECTEDAPPLICANT = 'N'
+	</update>
+	<select id="unreadSuccess" parameterType="int" resultType="int">
+		SELECT COUNT(*) 
+		FROM MATCHING 
+		WHERE MATCHINGAPPLICANT = #{userseq} AND MATCHINGSTATE = 'S' AND APPLICANTNOTICE = 0 AND SELECTEDAPPLICANT = 'Y'
+	</select>
+	<select id="unreadRequested" parameterType="int" resultType="int">
+		SELECT COUNT(*) 
+		FROM MATCHING 
+		WHERE MATCHINGWRITER = #{userseq} AND MATCHINGSTATE = 'P' AND WRITERNOTICE = 0
+	</select>
+	<select id="unreadRejection" parameterType="int" resultType="int">
+		SELECT COUNT(*) 
+		FROM MATCHING 
+		WHERE MATCHINGAPPLICANT = #{userseq} AND MATCHINGSTATE = 'E' AND APPLICANTNOTICE = 0 AND SELECTEDAPPLICANT = 'N'
+	</select>
+	<select id="rejectionAll" parameterType="map" resultType="MatchingDto">
+		SELECT * 
+		FROM MATCHING 
+		WHERE MATCHINGWRITER = TO_NUMBER(#{matchingwriter}) AND MATCHINGAPPLICANT != TO_NUMBER(#{matchingapplicant}) AND MATCHINGSTATE = 'P'
+	</select>
+	<select id="history" parameterType="int" resultType="MatchingDto">
+		SELECT *
+		FROM MATCHING
+		WHERE (MATCHINGWRITER = #{userseq} OR MATCHINGAPPLICANT = #{userseq}) AND MATCHINGSTATE = 'E'
+	</select>
+	<update id="autoReject" parameterType = "int">
+      UPDATE MATCHING
+      SET MATCHINGSTATE = 'E'
+      WHERE MATCHINGWRITER = #{userseq} AND MATCHINGSTATE = 'P'
+   </update>
+   
+   <select id="selectMaxSeq" parameterType="int" resultType="MatchingDto">
+   		SELECT *
+		FROM MATCHING
+		WHERE MATCHINGSEQ = (SELECT NVL(MAX(MATCHINGSEQ),0) FROM MATCHING WHERE MATCHINGAPPLICANT = #{userseq})
+   </select>
+</mapper>

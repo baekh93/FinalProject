@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="coin">
+
+<select id="selectAll" parameterType="int" resultType="CoinDto">
+		SELECT *  
+		FROM COIN
+		WHERE USERSEQ = #{userseq}
+		ORDER BY COINSEQ DESC
+	</select>
+	<select id="select" parameterType="map" resultType="int">
+		SELECT NVL(SUM(COINLOG), 0) as mysum FROM COIN WHERE USERSEQ = #{userseq} AND COINSTATE = #{coinstate}
+	</select>
+	<insert id="CoinInsert" parameterType="map">
+		INSERT INTO COIN 
+		VALUES(COIN_SEQ.NEXTVAL, #{userseq}, #{coinlog}, SYSDATE, #{coinstate})
+	</insert>
+  
+</mapper>

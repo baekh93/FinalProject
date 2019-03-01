@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="user">
+ 
+<select id="selectOne" resultType="UserDto" parameterType="String">
+	SELECT * FROM USERS WHERE USERID=#{id}
+</select>
+
+<insert id="insert" parameterType="UserDto">
+	INSERT INTO USERS VALUES( USERS_SEQ.NEXTVAL, #{userid}, #{userpw}, #{username}, #{userprofile}, #{usersex}, #{userage}, #{useraddress}, #{useremail}, #{usercinema1}, #{usercinema2}, #{usercinema3}, #{usergrade} )
+</insert>
+
+<select id="Login" resultType="UserDto" parameterType="map">
+	SELECT * FROM USERS WHERE USERID=#{userid} AND USERPW=#{userpw}
+</select>
+
+<select id="selectAll" resultType="UserDto">
+	SELECT * FROM USERS
+</select>
+
+<update id="userUpdate" parameterType="UserDto" >
+	UPDATE USERS SET USERGRADE=#{usergrade} WHERE USERSEQ=#{userseq}
+</update> 
+
+
+
+  <select id="selectOne2" resultType="UserDto">
+  SELECT *
+  FROM USERS
+  WHERE USERSEQ=#{userseq}
+  
+  </select>
+  
+  
+   <!-- mypage 시작-->
+   <select id="userOne" parameterType="String" resultType="com.yaboja.dto.UserDto">
+   SELECT * FROM USERS WHERE USERSEQ = TO_NUMBER(#{userid})
+   </select>
+   <select id="myboard" parameterType="int" resultType="com.yaboja.dto.ReviewboardDto">
+	SELECT * FROM REVIEWBOARD WHERE USERSEQ = #{userseq} ORDER BY REVIEWBOARDSEQ DESC
+	</select>
+   <update id="userUpdate2" parameterType="UserDto">
+   UPDATE USERS SET 
+   USERPW = #{userpw}, USERNAME = #{username}, USERPROFILE = #{userprofile}, USERSEX = #{usersex}, USERAGE = #{userage}, USERADDRESS = #{useraddress}, USERCINEMA1 = #{usercinema1}, USERCINEMA2 = #{usercinema2}, USERCINEMA3 = #{usercinema3}
+   WHERE USERSEQ = #{userseq} 
+   </update>
+   <update id="userDelete" parameterType="UserDto">
+	UPDATE USERS SET
+	USERGRADE = 'drop' WHERE USERSEQ = #{userseq}
+	</update>
+
+   <!-- mypage 끝 -->
+   
+</mapper>

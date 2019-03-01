@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="reviewboardcoment">
+
+
+<select id="commentCount" resultType="int">
+        SELECT
+            NVL(COUNT(*),0) as mycount
+        FROM REVIEWBOARDCOMENT
+    </select>
+    
+    <select id="commentList" parameterType="int" resultType="ReviewboardcomentDto">
+        SELECT
+            *
+        FROM REVIEWBOARDCOMENT WHERE REVIEWBOARDSEQ = #{reviewboardseq} ORDER BY REVIEWBOARDCOMENTSEQ
+    </select>
+    
+    
+    <insert id="commentInsert" parameterType="ReviewboardcomentDto">
+        INSERT INTO
+        REVIEWBOARDCOMENT (REVIEWBOARDCOMENTSEQ, REVIEWBOARDSEQ, REVIEWBOARDCOMENTCONTENT, USERNAME, REVIEWBOARDCOMENTDATE, USERSEQ)
+        VALUES(REVIEWBOARDCOMENT_SEQ.NEXTVAL,#{reviewboardseq},#{reviewboardcomentcontent},#{username},SYSDATE,#{userseq}) 
+    </insert>
+    
+    <update id="commentUpdate" parameterType="ReviewboardcomentDto">
+        UPDATE REVIEWBOARDCOMENT
+            SET
+            REVIEWBOARDCOMENTCONTENT = #{reviewboardcomentcontent}
+        WHERE REVIEWBOARDCOMENTSEQ = #{reviewboardcomentseq}
+    </update>
+    
+    <delete id="commentDelete" parameterType="int">
+        DELETE FROM REVIEWBOARDCOMENT WHERE REVIEWBOARDCOMENTSEQ = #{reviewboardcomentseq}
+    </delete>
+
+
+
+
+  
+</mapper>

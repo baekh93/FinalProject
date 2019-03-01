@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+
+	<typeAliases>
+		<typeAlias type="com.yaboja.dto.ChattingDto" alias="ChattingDto"/>
+		<typeAlias type="com.yaboja.dto.CinemaDto" alias="CinemaDto"/>
+		<typeAlias type="com.yaboja.dto.CoinDto" alias="CoinDto"/>
+		<typeAlias type="com.yaboja.dto.MatchingboardDto" alias="MatchingboardDto"/>
+		<typeAlias type="com.yaboja.dto.MatchingDto" alias="MatchingDto"/>
+		<typeAlias type="com.yaboja.dto.MoviecomentDto" alias="MoviecomentDto"/>
+		<typeAlias type="com.yaboja.dto.MovieDto" alias="MovieDto"/>
+		<typeAlias type="com.yaboja.dto.ReviewboardcomentDto" alias="ReviewboardcomentDto"/>
+		<typeAlias type="com.yaboja.dto.ReviewboardDto" alias="ReviewboardDto"/>
+		<typeAlias type="com.yaboja.dto.UserDto" alias="UserDto"/>
+		<typeAlias type="com.yaboja.dto.Criteria" alias="Criteria"/>
+		<typeAlias type="com.yaboja.dto.PageMaker" alias="PageMaker"/>
+		<typeAlias type="com.yaboja.dto.SearchCriteria" alias="SearchCriteria"/>
+		
+		
+
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="/sqls/chatting_mapper.xml"/>
+		<mapper resource="/sqls/cinema_mapper.xml"/>
+		<mapper resource="/sqls/coin_mapper.xml"/>
+		<mapper resource="/sqls/matching_mapper.xml"/>
+		<mapper resource="/sqls/matchingboard_mapper.xml"/>
+		<mapper resource="/sqls/movie_mapper.xml"/>
+		<mapper resource="/sqls/moviecoment_mapper.xml"/>
+		<mapper resource="/sqls/reviewboard_mapper.xml"/>
+		<mapper resource="/sqls/reviewboardcoment_mapper.xml"/>
+		<mapper resource="/sqls/user_mapper.xml"/>
+	</mappers>
+</configuration>

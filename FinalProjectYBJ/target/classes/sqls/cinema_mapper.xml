@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cinema">
+  <select id="selectList" resultType="CinemaDto">
+  SELECT *
+  FROM CINEMA
+  </select>
+  
+
+<select id="selectAll" resultType="CinemaDto">
+	SELECT * FROM CINEMA
+</select>  
+
+   <select id="match_selectOne" resultType="CinemaDto">
+   SELECT *
+   FROM CINEMA
+   WHERE CINEMASEQ=#{cinemaseq}
+  </select>
+  
+  <select id="getCinemaSeq" parameterType="String" resultType="int">
+  	SELECT CINEMASEQ
+  	FROM CINEMA
+  	WHERE CINEMA = #{cinema}
+  </select>
+  
+  <select id="getCinema" parameterType="int" resultType="String">
+  	SELECT CINEMA
+  	FROM CINEMA
+  	WHERE CINEMASEQ = #{cinemaseq}
+  </select>
+  
+  <insert id="insertCinema" parameterType="CinemaDto">
+	INSERT INTO CINEMA VALUES( CINEMA_SEQ.NEXTVAL, #{cinema}, #{latitude}, #{longitude})
+  </insert>
+  
+  <delete id="deleteCinema" parameterType="int" >
+  	DELETE FROM CINEMA WHERE CINEMASEQ = #{cinemaseq}
+  </delete>
+
+</mapper>
